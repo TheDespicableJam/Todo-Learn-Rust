@@ -1,3 +1,53 @@
+use std::process::Command;
+use std::{io};
 fn main() {
-    println!("Yayay new project!");
+    clear_screen();
+    display_menu();
+    
+    let mut todo_list:Vec<String>= Vec::new();
+
+    loop {
+     let mut raw_input  = String::new();
+    io::stdin()
+        .read_line(&mut raw_input)
+        .expect("Could not take input");
+    let trimmed_input = raw_input.trim();
+    clear_screen();
+    display_menu();
+    
+    match trimmed_input {
+        "1" => println!("hello world"),
+
+        "2" => {
+                println!("Enter Task to add:");
+                let mut raw_task = String::new();
+                io::stdin()
+                    .read_line(&mut raw_task)
+                    .expect("Could not add task");
+                let task = raw_task.trim().to_string();
+                todo_list.push(task);
+                println!("{:?}", todo_list);
+                }
+
+        "3" => println!("Remove task"),
+
+        "4" => break,
+
+        _ => println!("invalid input")
+    }
+    }
+}
+
+fn clear_screen(){
+    Command::new("cmd")
+        .args(["/C", "cls"])
+        .status()
+        .expect("Failed to clear screen");
+
+}
+
+fn display_menu(){
+    println!("Rust Todo List");
+    println!("===============");
+    println!("Enter what you want to do:\n\n1)View Current Todo's\n2)Add Task\n3)Remove Task\n4)Exit\n");
 }
