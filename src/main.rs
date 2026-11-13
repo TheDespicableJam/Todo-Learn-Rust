@@ -1,5 +1,5 @@
 use std::process::Command;
-use std::{io};
+use std::io;
 fn main() {
     clear_screen();
     display_menu();
@@ -8,7 +8,7 @@ fn main() {
 
     loop {
      let mut raw_input  = String::new();
-    io::stdin()
+     io::stdin()
         .read_line(&mut raw_input)
         .expect("Could not take input");
     let trimmed_input = raw_input.trim();
@@ -16,20 +16,39 @@ fn main() {
     display_menu();
     
     match trimmed_input {
-        "1" => println!("hello world"),
+        "1" => {
+            if todo_list.len() == 0 {
+                clear_screen();
+                display_menu();
+                println!("List Is empty");
+            }
+            else{
+                clear_screen();
+                display_menu();
+                println!("=============");
+                for (index, item) in todo_list.iter().enumerate(){
+                    println!("{}. {}", index+1, item);
+                }
+                println!("=============");
+            }
+        }
 
         "2" => {
-                println!("Enter Task to add:");
-                let mut raw_task = String::new();
-                io::stdin()
-                    .read_line(&mut raw_task)
-                    .expect("Could not add task");
-                let task = raw_task.trim().to_string();
-                todo_list.push(task);
-                println!("{:?}", todo_list);
-                }
-
-        "3" => println!("Remove task"),
+            println!("Enter Task to add:");
+            let mut raw_task = String::new();
+            io::stdin()
+                .read_line(&mut raw_task)
+                .expect("Could not add task");
+            let task = raw_task.trim().to_string();
+            todo_list.push(task);
+            clear_screen();
+            display_menu();
+            println!("Task added successfully");
+        }
+        
+        "3" => {
+            println!("Remove")
+        },
 
         "4" => break,
 
