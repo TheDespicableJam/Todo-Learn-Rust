@@ -1,5 +1,6 @@
 use std::process::Command;
 use std::io;
+use std::{thread, time};
 fn main() {
     clear_screen();
     display_menu();
@@ -17,14 +18,16 @@ fn main() {
     
     match trimmed_input {
         "1" => {
-            if todo_list.len() == 0 {
+            clear_screen();
+            display_menu();
+            if todo_list.is_empty() {
+                
+                println!("List Is empty");
+                sleep(2);
                 clear_screen();
                 display_menu();
-                println!("List Is empty");
             }
             else{
-                clear_screen();
-                display_menu();
                 println!("=============");
                 for (index, item) in todo_list.iter().enumerate(){
                     println!("{}. {}", index+1, item);
@@ -44,15 +47,64 @@ fn main() {
             clear_screen();
             display_menu();
             println!("Task added successfully");
+            sleep(2);
+            clear_screen();
+            display_menu();
         }
         
         "3" => {
-            println!("Remove")
+            let mut raw_inp = String::new();
+            clear_screen();
+            display_menu();
+            if todo_list.is_empty(){
+                println!("No Tasks in the List");
+                sleep(2);
+                clear_screen();
+                display_menu();
+            }
+            else {
+                println!("=============");
+                for (index, item) in todo_list.iter().enumerate(){
+                    println!("{}. {}", index+1, item);
+                }
+                println!("=============");
+                println!("Which Task should be removed? (Enter Serial No.)");
+                io::stdin()
+                    .read_line(&mut raw_inp)
+                    .expect("An Error occured while removing the task");
+                let remove_task: usize = raw_inp.trim().parse().expect("Invalid number");
+                let mut opt = 0;
+                let mut removable = false;
+                for index in todo_list.iter().enumerate(){
+                    if index.0 + 1  == remove_task{
+                        opt = index.0;
+                        removable = true;
+                    }
+                }
+                if removable == true{
+                    todo_list.remove(opt);
+                    println!("Task removed successfully");
+                    sleep(2);
+                    clear_screen();
+                    display_menu();
+                }
+                else{
+                    println!("No task found with that index");
+                    sleep(2);
+                    clear_screen();
+                    display_menu();
+                }
+            }
         },
 
         "4" => break,
 
-        _ => println!("invalid input")
+        _ => {
+            println!("Invalid Input");
+            sleep(2);
+            clear_screen();
+            display_menu();
+        }
     }
     }
 }
@@ -69,4 +121,8 @@ fn display_menu(){
     println!("Rust Todo List");
     println!("===============");
     println!("Enter what you want to do:\n\n1)View Current Todo's\n2)Add Task\n3)Remove Task\n4)Exit\n");
+}
+
+fn sleep(time:u64){
+    thread::sleep(time::Duration::from_secs(time));
 }
