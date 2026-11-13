@@ -73,21 +73,11 @@ fn main() {
                     .read_line(&mut raw_inp)
                     .expect("An Error occured while removing the task");
                 let remove_task: usize = raw_inp.trim().parse().expect("Invalid number");
-                let mut opt = 0;
-                let mut removable = false;
-                for index in todo_list.iter().enumerate(){
-                    if index.0 + 1  == remove_task{
-                        opt = index.0;
-                        removable = true;
-                    }
-                }
-                if removable == true{
-                    todo_list.remove(opt);
-                    println!("Task removed successfully");
-                    sleep(2);
-                    clear_screen();
-                    display_menu();
-                }
+               if remove_task > 0 && remove_task <= todo_list.len(){
+                todo_list.remove(remove_task-1);
+                clear_screen();
+                display_menu();
+               }
                 else{
                     println!("No task found with that index");
                     sleep(2);
