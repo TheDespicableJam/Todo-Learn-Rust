@@ -2,17 +2,18 @@ use std::process::Command;
 use std::io;
 use std::{thread, time};
 fn main() {
+    let t = 1;
     clear_screen();
     display_menu();
     
     let mut todo_list:Vec<String>= Vec::new();
 
     loop {
-     let mut raw_input  = String::new();
+     let mut main_screen_inp  = String::new();
      io::stdin()
-        .read_line(&mut raw_input)
+        .read_line(&mut main_screen_inp)
         .expect("Could not take input");
-    let trimmed_input = raw_input.trim();
+    let trimmed_input = main_screen_inp.trim();
     clear_screen();
     display_menu();
     
@@ -23,7 +24,7 @@ fn main() {
             if todo_list.is_empty() {
                 
                 println!("List Is empty");
-                sleep(2);
+                sleep(t);
                 clear_screen();
                 display_menu();
             }
@@ -47,7 +48,7 @@ fn main() {
             clear_screen();
             display_menu();
             println!("Task added successfully");
-            sleep(2);
+            sleep(t);
             clear_screen();
             display_menu();
         }
@@ -58,40 +59,68 @@ fn main() {
             display_menu();
             if todo_list.is_empty(){
                 println!("No Tasks in the List");
-                sleep(2);
+                sleep(t);
                 clear_screen();
                 display_menu();
             }
             else {
-                println!("=============");
-                for (index, item) in todo_list.iter().enumerate(){
-                    println!("{}. {}", index+1, item);
+                loop{
+                    println!("=============");
+                    for (index, item) in todo_list.iter().enumerate(){
+                        println!("{}. {}", index+1, item);
+                    }
+                    println!("=============");
+                
+                    println!("Which Task should be removed? (Enter Serial No.)");
+                    raw_inp.clear();
+                    io::stdin()
+                        .read_line(&mut raw_inp)
+                        .expect("An Error occured while removing the task");
+
+                    match raw_inp.trim().parse::<usize>(){
+
+                        Ok(number) => {
+                            if number > 0 && number <= todo_list.len(){
+                                todo_list.remove(number-1);
+                                clear_screen();
+                                display_menu();
+                                break;
+                            }
+                            else{
+                                clear_screen();
+                                display_menu();
+                                println!("Invalid index number, Try Again");
+                            }
+                        }
+
+                        Err(error) => {
+                            clear_screen();
+                            display_menu();
+                            println!("An error occured: {}, Enter a Valid Value", error)
+                        }
+                    }
                 }
-                println!("=============");
-                println!("Which Task should be removed? (Enter Serial No.)");
-                io::stdin()
-                    .read_line(&mut raw_inp)
-                    .expect("An Error occured while removing the task");
-                let remove_task: usize = raw_inp.trim().parse().expect("Invalid number");
-               if remove_task > 0 && remove_task <= todo_list.len(){
+               /* if remove_task > 0 && remove_task <= todo_list.len(){
                 todo_list.remove(remove_task-1);
+                println!("Task removed successfully");
+                sleep(t);
                 clear_screen();
-                display_menu();
-               }
-                else{
+                display_menu(); */
+               
+                /* else{
                     println!("No task found with that index");
-                    sleep(2);
+                    sleep(t);
                     clear_screen();
                     display_menu();
-                }
+                } */
             }
-        },
+        }
 
         "4" => break,
 
         _ => {
             println!("Invalid Input");
-            sleep(2);
+            sleep(t);
             clear_screen();
             display_menu();
         }
