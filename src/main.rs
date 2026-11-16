@@ -9,28 +9,25 @@ fn main() {
     let mut todo_list:Vec<String>= Vec::new();
 
     loop {
-     let mut main_screen_inp  = String::new();
-     io::stdin()
-        .read_line(&mut main_screen_inp)
-        .expect("Could not take input");
-    let trimmed_input = main_screen_inp.trim();
+    let raw = input();
+    let main_screen_input = raw.parse().unwrap();
     clear_screen();
     display_menu();
     
-    match trimmed_input {
-        "1" => {
+    match main_screen_input{
+        1 => {
             view_list(&todo_list, t);
         }
 
-        "2" => {
+        2 => {
             add_task(&mut todo_list, t);
         }
         
-        "3" => {
+        3 => {
             remove_task(&mut todo_list, t);
         }
 
-        "4" => break,
+        4 => break,
 
         _ => {
             println!("Invalid Input");
@@ -47,7 +44,6 @@ fn clear_screen(){
         .args(["/C", "cls"])
         .status()
         .expect("Failed to clear screen");
-
 }
 
 fn display_menu(){
@@ -80,11 +76,7 @@ fn view_list(todo_list: &Vec<String>, t: u64){
 
 fn add_task(todo_list: &mut Vec<String>, t: u64){
     println!("Enter Task to add:");
-    let mut raw_task = String::new();
-    io::stdin()
-        .read_line(&mut raw_task)
-        .expect("Could not add task");
-    let task = raw_task.trim().to_string();
+    let task = input();
     todo_list.push(task);
     clear_screen();
     display_menu();
@@ -95,7 +87,6 @@ fn add_task(todo_list: &mut Vec<String>, t: u64){
 }
 
 fn remove_task(todo_list: &mut Vec<String>, t: u64){
-    let mut raw_inp = String::new();
         clear_screen();
         display_menu();
         if todo_list.is_empty(){
@@ -112,12 +103,8 @@ fn remove_task(todo_list: &mut Vec<String>, t: u64){
                     }
                 println!("=============");
                 println!("Which Task should be removed? (Enter Serial No.)");
-                raw_inp.clear();
-                io::stdin()
-                    .read_line(&mut raw_inp)
-                    .expect("An Error occured while removing the task");
-                
-                match raw_inp.trim().parse::<usize>(){
+                let raw_inp = input();
+                match raw_inp.parse::<usize>(){
                     Ok(number) => {
                         if number > 0 && number <= todo_list.len(){
                             todo_list.remove(number-1);
@@ -140,4 +127,13 @@ fn remove_task(todo_list: &mut Vec<String>, t: u64){
                 }
             }
         }
+}
+
+fn input() -> String{
+    let mut input_var = String::new();
+    io::stdin()
+        .read_line(&mut input_var)
+        .expect("Error occured while taking input");
+    let return_val = input_var.trim().to_string();
+    return_val
 }
