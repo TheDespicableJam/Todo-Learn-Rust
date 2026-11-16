@@ -19,101 +19,15 @@ fn main() {
     
     match trimmed_input {
         "1" => {
-            clear_screen();
-            display_menu();
-            if todo_list.is_empty() {
-                
-                println!("List Is empty");
-                sleep(t);
-                clear_screen();
-                display_menu();
-            }
-            else{
-                println!("=============");
-                for (index, item) in todo_list.iter().enumerate(){
-                    println!("{}. {}", index+1, item);
-                }
-                println!("=============");
-            }
+            view_list(&todo_list, t);
         }
 
         "2" => {
-            println!("Enter Task to add:");
-            let mut raw_task = String::new();
-            io::stdin()
-                .read_line(&mut raw_task)
-                .expect("Could not add task");
-            let task = raw_task.trim().to_string();
-            todo_list.push(task);
-            clear_screen();
-            display_menu();
-            println!("Task added successfully");
-            sleep(t);
-            clear_screen();
-            display_menu();
+            add_task(&mut todo_list, t);
         }
         
         "3" => {
-            let mut raw_inp = String::new();
-            clear_screen();
-            display_menu();
-            if todo_list.is_empty(){
-                println!("No Tasks in the List");
-                sleep(t);
-                clear_screen();
-                display_menu();
-            }
-            else {
-                loop{
-                    println!("=============");
-                    for (index, item) in todo_list.iter().enumerate(){
-                        println!("{}. {}", index+1, item);
-                    }
-                    println!("=============");
-                
-                    println!("Which Task should be removed? (Enter Serial No.)");
-                    raw_inp.clear();
-                    io::stdin()
-                        .read_line(&mut raw_inp)
-                        .expect("An Error occured while removing the task");
-
-                    match raw_inp.trim().parse::<usize>(){
-
-                        Ok(number) => {
-                            if number > 0 && number <= todo_list.len(){
-                                todo_list.remove(number-1);
-                                clear_screen();
-                                display_menu();
-                                break;
-                            }
-                            else{
-                                clear_screen();
-                                display_menu();
-                                println!("Invalid index number, Try Again");
-                            }
-                        }
-
-                        Err(error) => {
-                            clear_screen();
-                            display_menu();
-                            println!("An error occured: {}, Enter a Valid Value", error)
-                        }
-                    }
-                }
-               /* if remove_task > 0 && remove_task <= todo_list.len(){
-                todo_list.remove(remove_task-1);
-                println!("Task removed successfully");
-                sleep(t);
-                clear_screen();
-                display_menu(); */
-               
-                /* else{
-                    println!("No task found with that index");
-                    sleep(t);
-                    clear_screen();
-                    display_menu();
-                } */
-            }
+            remove_task(&mut todo_list, t);
         }
 
         "4" => break,
@@ -144,4 +58,86 @@ fn display_menu(){
 
 fn sleep(time:u64){
     thread::sleep(time::Duration::from_secs(time));
+}
+
+fn view_list(todo_list: &Vec<String>, t: u64){
+    clear_screen();
+    display_menu();
+    if todo_list.is_empty() {      
+        println!("List Is empty");
+        sleep(t);
+        clear_screen();
+        display_menu();
+        }
+    else{
+        println!("=============");
+        for (index, item) in todo_list.iter().enumerate(){
+            println!("{}. {}", index+1, item);
+        }
+        println!("=============");
+        }
+}
+
+fn add_task(todo_list: &mut Vec<String>, t: u64){
+    println!("Enter Task to add:");
+    let mut raw_task = String::new();
+    io::stdin()
+        .read_line(&mut raw_task)
+        .expect("Could not add task");
+    let task = raw_task.trim().to_string();
+    todo_list.push(task);
+    clear_screen();
+    display_menu();
+    println!("Task added successfully");
+    sleep(t);
+    clear_screen();
+    display_menu();
+}
+
+fn remove_task(todo_list: &mut Vec<String>, t: u64){
+    let mut raw_inp = String::new();
+        clear_screen();
+        display_menu();
+        if todo_list.is_empty(){
+            println!("No Tasks in the List");
+            sleep(t);
+            clear_screen();
+            display_menu();
+        }
+        else {
+            loop{
+                println!("=============");
+                for (index, item) in todo_list.iter().enumerate(){
+                    println!("{}. {}", index+1, item);
+                    }
+                println!("=============");
+                println!("Which Task should be removed? (Enter Serial No.)");
+                raw_inp.clear();
+                io::stdin()
+                    .read_line(&mut raw_inp)
+                    .expect("An Error occured while removing the task");
+                
+                match raw_inp.trim().parse::<usize>(){
+                    Ok(number) => {
+                        if number > 0 && number <= todo_list.len(){
+                            todo_list.remove(number-1);
+                            clear_screen();
+                            display_menu();
+                            break;
+                        }
+                        else{
+                            clear_screen();
+                            display_menu();
+                            println!("Invalid index number, Try Again");
+                        }
+                    }
+
+                    Err(error) => {
+                        clear_screen();
+                        display_menu();
+                        println!("An error occured: {}, Enter a Valid Value", error)
+                    }
+                }
+            }
+        }
 }
