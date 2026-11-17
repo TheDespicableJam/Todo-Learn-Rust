@@ -75,15 +75,25 @@ fn view_list(todo_list: &Vec<String>, t: u64){
 }
 
 fn add_task(todo_list: &mut Vec<String>, t: u64){
-    println!("Enter Task to add:");
-    let task = input();
-    todo_list.push(task);
-    clear_screen();
-    display_menu();
-    println!("Task added successfully");
-    sleep(t);
-    clear_screen();
-    display_menu();
+    loop {
+        println!("Enter Task to add:");
+        let task = input();
+        if task.len() != 0{
+            todo_list.push(task);
+            clear_screen();
+            display_menu();
+            println!("Task added successfully");
+            sleep(t);
+            clear_screen();
+            display_menu();
+            break;
+        }
+        else{
+            println!("Cannot take an empty task!")
+        }    
+    }
+    
+    
 }
 
 fn remove_task(todo_list: &mut Vec<String>, t: u64){
