@@ -1,33 +1,47 @@
+use std::path;
 use std::process::Command;
-use std::io;
+use std::io::{self};
 use std::{thread, time};
+use std::fs;
 fn main() {
     let t = 1;
     clear_screen();
     display_menu();
-    
-    let mut todo_list:Vec<String>= Vec::new();
+
+    let dir = path::Path::new("dir.txt");
+    let mut todo_list:Vec<String>;
+
+    if dir.exists(){
+        let content:String = fs::read_to_string(dir).unwrap();
+        todo_list = content.lines().map(String::from).collect();
+    }
+    else{
+        todo_list = Vec::new();
+    }
 
     loop {
-    let raw = input();
-    let main_screen_input = raw.parse().unwrap();
+    let main_screen_input = input();
     clear_screen();
     display_menu();
     
-    match main_screen_input{
-        1 => {
+    match main_screen_input.as_str(){
+        "1" => {
             view_list(&todo_list, t);
         }
 
-        2 => {
+        "2" => {
             add_task(&mut todo_list, t);
         }
         
-        3 => {
+        "3" => {
             remove_task(&mut todo_list, t);
         }
 
-        4 => break,
+        "4" => {
+            let content = todo_list.join("\n");
+            fs::write("dir.txt", content).unwrap();
+            break;
+        }
 
         _ => {
             println!("Invalid Input");
@@ -118,6 +132,10 @@ fn remove_task(todo_list: &mut Vec<String>, t: u64){
                     Ok(number) => {
                         if number > 0 && number <= todo_list.len(){
                             todo_list.remove(number-1);
+                            clear_screen();
+                            display_menu();
+                            println!("Task Removed successfully");
+                            sleep(t);
                             clear_screen();
                             display_menu();
                             break;
